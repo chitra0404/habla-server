@@ -1,4 +1,5 @@
 const mongoose=require("mongoose");
+
 const chatSchema=mongoose.Schema({
     profilePic:{
 
@@ -29,7 +30,9 @@ const chatSchema=mongoose.Schema({
     groupMessage:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User',
-    }
+    },
+    groupAdmin: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } // Define groupAdmin field
+
 
 },
 {

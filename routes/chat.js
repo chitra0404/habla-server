@@ -10,7 +10,7 @@ const {accessChats,
 
     router.post('/access', auth,accessChats);
     router.get('/', auth, fetchAllChats);
-    router.post('/group',  auth,creatGroup);
+    router.post('/group',auth,creatGroup);
     router.patch('/group/rename', auth, renameGroup);
     router.patch('/groupAdd', auth,addToGroup);
     router.patch('/groupRemove',auth, removeFromGroup);

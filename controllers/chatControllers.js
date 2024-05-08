@@ -57,11 +57,15 @@ module.exports. fetchAllChats = async (req, res) => {
   }
 };
 module.exports. creatGroup = async (req, res) => {
+  
   const { chatName, users } = req.body;
+  console.log(chatName,users);
   if (!chatName || !users) {
     res.status(400).json({ message: 'Please fill the fields' });
   }
-  const parsedUsers = JSON.parse(users);
+  const parsedUsers = users.split(',');
+  console.log("parse",parsedUsers);
+  
   if (parsedUsers.length < 2)
     res.send(400).send('Group should contain more than 2 users');
   parsedUsers.push(req.rootUser);
@@ -73,8 +77,8 @@ module.exports. creatGroup = async (req, res) => {
       groupAdmin: req.rootUserId,
     });
     const createdChat = await Chat.findOne({ _id: chat._id })
-      .populate('users', '-password')
-      .populate('groupAdmin', '-password');
+  .populate({ path: 'users', select: '-password' }) // Populate users field
+  .populate({ path: 'groupAdmin', select: '-password' });
     // res.status(200).json(createdChat);
     res.send(createdChat);
   } catch (error) {

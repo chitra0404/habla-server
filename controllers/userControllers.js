@@ -108,16 +108,16 @@ module.exports.validUser = async (req, res) => {
 
     console.log('Search Query:', searchQuery);
 
-    try {
+    // try {
         const users = await User.find(searchQuery);
         if (!users.length) {
             console.log('No users found for query:', searchQuery);
         }
         res.status(200).json(users);
-    } catch (error) {
-        console.error('Error searching users:', error);
-        res.status(500).json({ error: 'Internal server error', details: error.message });
-    }
+    // } catch (error) {
+    //     console.error('Error searching users:', error);
+    //     res.status(500).json({ error: 'Internal server error', details: error.message });
+    // }
 };
 
 

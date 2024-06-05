@@ -1,7 +1,7 @@
 const router=require('express').Router();
 const auth=require('../middleware/authMiddleware');
 
-const {Signup,Login,getUserById,updateInfo, validUser,searchUsers, logout}=require('../controllers/userControllers')
+const {Signup,Login,getUserById,updateInfo, validUser,searchUser, logout}=require('../controllers/userControllers')
 
  router.post("/register",Signup)
  router.post('/login',Login)
@@ -10,7 +10,7 @@ router.get('/valid',auth,validUser)
  router.get('/logout', auth, logout);
 
  router.patch('/update/:id', auth, updateInfo)
- router.get('/user?', auth, searchUsers);
+ router.get('/user?', auth, searchUser);
  
  
 

@@ -95,7 +95,7 @@ module.exports.validUser = async (req, res) => {
   module.exports. logout =async (req, res) => {
     req.rootUser.tokens = req.rootUser.tokens.filter((e) => e.token != req.token);
   };
-  const searchUsers = async (req, res) => {
+  module.exports. searchUser = async (req, res) => {
     const searchQuery = req.query.search
       ? {
           $or: [
@@ -117,4 +117,4 @@ module.exports.validUser = async (req, res) => {
     }
   };
   
-  module.exports = { searchUsers };
+  

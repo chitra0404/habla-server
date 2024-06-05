@@ -95,26 +95,35 @@ module.exports.validUser = async (req, res) => {
   module.exports. logout =async (req, res) => {
     req.rootUser.tokens = req.rootUser.tokens.filter((e) => e.token != req.token);
   };
-  module.exports. searchUser = async (req, res) => {
-    const searchQuery = req.query.search
-      ? {
-          $or: [
-            { name: { $regex: req.query.search, $options: 'i' } },
-            { email: { $regex: req.query.search, $options: 'i' } },
-          ],
-          _id: { $ne: req.rootUserId },
-        }
-      : { _id: { $ne: req.rootUserId } };
-  
-    console.log('Search Query:', searchQuery); // Log the query
-  
+  const searchUser= async (req, res) => {
     try {
+      // Log the entire request object to debug
+      console.log('Request Query:', req.query);
+      console.log('Request Params:', req.params);
+      console.log('Request Body:', req.body);
+  
+      // Check for the 'search' query parameter and construct the search query accordingly
+      const searchQuery = req.query.search
+        ? {
+            $or: [
+              { name: { $regex: req.query.search, $options: 'i' } },
+              { email: { $regex: req.query.search, $options: 'i' } },
+            ],
+            _id: { $ne: req.rootUserId }, // Exclude the current user's ID
+          }
+        : { _id: { $ne: req.rootUserId } };
+  
+      // Log the constructed search query
+      console.log('Constructed Search Query:', searchQuery);
+  
+      // Perform the search
       const users = await User.find(searchQuery);
       res.status(200).json(users);
     } catch (error) {
-      console.error('Error searching users:', error);
+      // Log the full error details
+      console.error('Error during user search:', error);
       res.status(500).json({ error: 'Internal server error' });
     }
   };
   
-  
+  module.exports = { searchUser };

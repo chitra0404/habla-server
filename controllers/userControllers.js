@@ -95,35 +95,24 @@ module.exports.validUser = async (req, res) => {
   module.exports. logout =async (req, res) => {
     req.rootUser.tokens = req.rootUser.tokens.filter((e) => e.token != req.token);
   };
-  module.exports.searchUser= async (req, res) => {
-    let searchQuery;
-    if (req.query.search) {
-        const searchRegex = { $regex: req.query.search, $options: 'i' };
-        searchQuery = {
+  module.exports.searchUser = async (req, res) => {
+    const searchQuery = req.query.search
+        ? {
             $or: [
-                { name: searchRegex },
-                { email: searchRegex },
+                { name: { $regex: req.query.search, $options: 'i' } },
+                { email: { $regex: req.query.search, $options: 'i' } },
             ],
-            _id: { $ne: req.rootUserId } // Ensure the exclusion of the root user ID
-        };
-    } else {
-        searchQuery = { _id: { $ne: req.rootUserId } };
-    }
-
-    console.log('Search Query:', searchQuery);
+            _id: { $ne: req.rootUserId }
+        }
+        : { _id: { $ne: req.rootUserId } };
 
     try {
+        console.log('Search Query:', searchQuery); // Debugging line
         const users = await User.find(searchQuery);
-        if (!users.length) {
-            console.log('No users found for query:', searchQuery);
-        }
+        console.log('Found Users:', users); // Debugging line
         res.status(200).json(users);
     } catch (error) {
-        console.error('Error searching users:', error);
-        res.status(500).json({ error: 'Internal server error', details: error.message });
+        console.error('Error searching users:', error); // Detailed error logging
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
-
-
-
-  

@@ -107,8 +107,13 @@ module.exports.validUser = async (req, res) => {
         }
         : { _id: { $ne: req.rootUserId } };
 
+    console.log('Search Query:', searchQuery);
+
     try {
         const users = await User.find(searchQuery);
+        if (!users.length) {
+            console.log('No users found for query:', searchQuery);
+        }
         res.status(200).json(users);
     } catch (error) {
         console.error('Error searching users:', error);

@@ -10,7 +10,7 @@ router.get('/valid',auth,validUser)
  router.get('/logout', auth, logout);
 
  router.patch('/update/:id', auth, updateInfo)
- router.get('/user?', auth, searchUser);
+ router.get('/users/search', auth, searchUser);
  
  
 

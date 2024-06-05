@@ -95,7 +95,6 @@ module.exports.validUser = async (req, res) => {
   module.exports. logout =async (req, res) => {
     req.rootUser.tokens = req.rootUser.tokens.filter((e) => e.token != req.token);
   };
-
   module.exports.searchUsers = async (req, res) => {
     const searchQuery = req.query.search
         ? {
@@ -117,7 +116,7 @@ module.exports.validUser = async (req, res) => {
         res.status(200).json(users);
     } catch (error) {
         console.error('Error searching users:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error', details: error.message });
     }
 };
 

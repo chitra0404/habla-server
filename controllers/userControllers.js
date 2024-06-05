@@ -102,9 +102,11 @@ module.exports.validUser = async (req, res) => {
             { name: { $regex: req.query.search, $options: 'i' } },
             { email: { $regex: req.query.search, $options: 'i' } },
           ],
-          _id: { $ne: req.rootUserId }, // Exclude the current user's ID
+          _id: { $ne: req.rootUserId },
         }
       : { _id: { $ne: req.rootUserId } };
+  
+    console.log('Search Query:', searchQuery); // Log the query
   
     try {
       const users = await User.find(searchQuery);

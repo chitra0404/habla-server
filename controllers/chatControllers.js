@@ -124,19 +124,35 @@ module.exports. addToGroup = async (req, res) => {
     res.status(409).send('user already exists');
   }
 };
-module.exports. removeFromGroup = async (req, res) => {
+module.exports.removeFromGroup = async (req, res) => {
   const { userId, chatId } = req.body;
-  const existing = await Chat.findOne({ _id: chatId });
-  if (existing.users.includes(userId)) {
-    Chat.findByIdAndUpdate(chatId, {
-      $pull: { users: userId },
-    })
-      .populate('groupAdmin', '-password')
-      .populate('users', '-password')
-      .then((e) => res.status(200).send(e))
-      .catch((e) => res.status(404));
-  } else {
-    res.status(409).send('user doesnt exists');
+  
+  try {
+    const chat = await Chat.findById(chatId);
+
+    if (!chat) {
+      return res.status(404).send('Chat not found');
+    }
+
+    const userIndex = chat.users.findIndex((id) => id.toString() === userId);
+    
+    if (userIndex !== -1) {
+      chat.users.splice(userIndex, 1);
+      
+      const updatedChat = await chat.save();
+
+      const populatedChat = await Chat.findById(chatId)
+        .populate('groupAdmin', '-password')
+        .populate('users', '-password');
+
+      res.status(200).json(populatedChat);
+    } else {
+      res.status(409).send('User does not exist in the group');
+    }
+  } catch (error) {
+    console.error('Error removing user from group:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
+
 module.exports. removeContact = async (req, res) => {};

@@ -22,10 +22,7 @@ app.use("/api/chat", chatRoutes);
 
 const port = process.env.PORT || 8080;
 
-mongoose.connect(process.env.URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
+mongoose.connect(process.env.URL)
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.error("Error connecting to MongoDB:", err));
 

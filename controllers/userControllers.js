@@ -94,20 +94,32 @@ module.exports.logout = async (req, res) => {
 
 module.exports.searchUser = async (req, res) => {
   try {
+    console.log('Request Query:', req.query);
+
+    // Construct the search query based on the 'search' parameter
     const searchQuery = req.query.search
       ? {
           $or: [
             { name: { $regex: req.query.search, $options: 'i' } },
             { email: { $regex: req.query.search, $options: 'i' } },
-          ],
-          _id: { $ne: req.rootUserId },
+          ]
         }
-      : { _id: { $ne: req.rootUserId } };
+      : {};
 
-    const users = await User.find(searchQuery);
+    console.log('Search Query:', searchQuery);
+
+    // Perform the search operation in the database
+    const users = await User.find(searchQuery).select('-password');
+
+    console.log('Found Users:', users);
+
+    // Return the search results to the client
     return res.status(200).json(users);
   } catch (error) {
     console.error('Error during user search:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
+

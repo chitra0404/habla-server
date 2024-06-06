@@ -2,6 +2,7 @@ const router=require('express').Router();
 const auth=require('../middleware/authMiddleware');
 
 const {Signup,Login,getUserById,updateInfo, validUser,searchUser, logout}=require('../controllers/userControllers')
+console.log({ Signup, Login, getUserById, updateInfo, validUser, searchUser, logout });
 
  router.post("/register",Signup)
  router.post('/login',Login)

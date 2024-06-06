@@ -56,35 +56,42 @@ module.exports. fetchAllChats = async (req, res) => {
     console.log(error);
   }
 };
-module.exports. creatGroup = async (req, res) => {
-  
+module.exports.creatGroup = async (req, res) => {
   const { chatName, users } = req.body;
-  console.log(chatName,users);
+  console.log(chatName, users);
+
   if (!chatName || !users) {
-    res.status(400).json({ message: 'Please fill the fields' });
+    return res.status(400).json({ message: 'Please fill the fields' });
   }
-  const parsedUsers = users.split(',');
-  console.log("parse",parsedUsers);
-  
-  if (parsedUsers.length < 2)
-    res.send(400).send('Group should contain more than 2 users');
-  parsedUsers.push(req.rootUser);
+
+  const parUsers = users.split(',');  // Split the string by commas to create an array
+  console.log("parUsers", parUsers);
+
+  if (parUsers.length < 2) {
+    return res.status(400).send('Group should contain more than 2 users');
+  }
+
+  parUsers.push(req.rootUser);
+
   try {
     const chat = await Chat.create({
       chatName: chatName,
-      users: parsedUsers,
+      users: parUsers,
       isGroup: true,
       groupAdmin: req.rootUserId,
     });
+
     const createdChat = await Chat.findOne({ _id: chat._id })
-  .populate({ path: 'users', select: '-password' }) // Populate users field
-  .populate({ path: 'groupAdmin', select: '-password' });
-    // res.status(200).json(createdChat);
-    res.send(createdChat);
+      .populate({ path: 'users', select: '-password' })  // Populate users field
+      .populate({ path: 'groupAdmin', select: '-password' });
+
+    res.status(200).json(createdChat);
   } catch (error) {
-    res.sendStatus(500);
+    console.error('Error creating group:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
+
 module.exports. renameGroup = async (req, res) => {
   const { chatId, chatName } = req.body;
   if (!chatId || !chatName)

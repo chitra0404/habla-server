@@ -5,6 +5,7 @@ const User=require('../models/userModel');
 
 module.exports.sendMessage = async (req, res) => {
   const { chatId, message } = req.body;
+  
   try {
     let msg = await Message.create({ sender: req.userId, message, chatId });
     msg = await msg.populate('sender', 'name profilePic email').populate({

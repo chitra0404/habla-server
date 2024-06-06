@@ -3,31 +3,29 @@ const Chat=require('../models/chatModel');
 const User=require('../models/userModel');
 
 
-module.exports. sendMessage=async (req,res)=>{
-    const {chatId,message}=req.body;
-    try{
-        let msg=await Message.create({sender:req.userId,message,chatId});
-        msg = await (
-            await msg.populate('sender', 'name profilePic email')
-          ).populate({
-            path: 'chatId',
-            select: 'chatName isGroup users',
-            model: 'Chat',
-            populate: {
-              path: 'users',
-              select: 'name email profilePic',
-              model: 'User',
-            },
-          });
-          await Chat.findIdAndUpdate(chatId,{latestmessage:msg});
-          res.status(200).send(message);
+module.exports.sendMessage = async (req, res) => {
+  const { chatId, message } = req.body;
+  try {
+    let msg = await Message.create({ sender: req.userId, message, chatId });
+    msg = await msg.populate('sender', 'name profilePic email').populate({
+      path: 'chatId',
+      select: 'chatName isGroup users',
+      model: 'Chat',
+      populate: {
+        path: 'users',
+        select: 'name email profilePic',
+        model: 'User',
+      },
+    }).execPopulate();
 
-    }catch (error) {
-    console.log(error);
-    res.status(500).json({ error: error });
+    await Chat.findByIdAndUpdate(chatId, { latestMessage: msg });
+
+    res.status(200).json(msg); // Sending the message object as response
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
   }
-}
-
+};
 
 module.exports. getMessage=async(req,res)=>{
     const {chatId}=req.params;

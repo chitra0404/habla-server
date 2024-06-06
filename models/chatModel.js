@@ -25,7 +25,7 @@ const chatSchema=mongoose.Schema({
 ],
     latestMessage:{
        type:mongoose.Schema.Types.ObjectId,
-       ref:'Message' ,
+       ref:'message' ,
     },
     groupMessage:{
         type:mongoose.Schema.Types.ObjectId,
